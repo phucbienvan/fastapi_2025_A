@@ -1,0 +1,4 @@
+/venv/
+.cursor
+.env
+.DS_Store
