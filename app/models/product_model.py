@@ -1,5 +1,5 @@
 from app.models.base_model import BaseModel
-from sqlalchemy import Column, String, Float, DateTime, Integer
+from sqlalchemy import Column, String, Float, DateTime, Integer, Boolean
 import datetime
 
 class Product(BaseModel):
@@ -8,3 +8,4 @@ class Product(BaseModel):
     name: str = Column(String, index=True)
     description: str = Column(String, index=True)
     price: float = Column(Float, index=True)
+    is_deleted: bool = Column(Boolean, default=False)
