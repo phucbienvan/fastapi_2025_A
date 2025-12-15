@@ -35,3 +35,26 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     db.delete(product)
     db.commit()
     return DataResponse.custom_response(code="200", message="Delete product by id", data=None)
+
+@router.put("/products/{product_id}", tags=["products"], description="Update a product by id", response_model=DataResponse[ProductSchema])
+def update_product(product_id: int, data: CreateProductSchema, db: Session = Depends(get_db)):
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        return DataResponse.custom_response(code="404", message="Product not found", data=None)
+    product.name = data.name
+    product.price = data.price
+    product.description = data.description
+    db.commit()
+    db.refresh(product)
+    return DataResponse.custom_response(code="200", message="Update product by id", data=product)
+
+# soft delete
+@router.delete("/products/{product_id}", tags=["products"], description="Soft delete a product by id", response_model=DataResponse[ProductSchema])
+def soft_delete_product(product_id: int, db: Session = Depends(get_db)):
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        return DataResponse.custom_response(code="404", message="Product not found", data=None)
+    product.is_deleted = True
+    db.commit()
+    db.refresh(product)
+    return DataResponse.custom_response(code="200", message="Soft delete product by id", data=product) 
