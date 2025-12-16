@@ -8,3 +8,6 @@ class Product(BaseModel):
     name: str = Column(String, index=True)
     description: str = Column(String, index=True)
     price: float = Column(Float, index=True)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    updated_at = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    deleted_at = Column(DateTime, nullable=True)

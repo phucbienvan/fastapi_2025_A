@@ -14,3 +14,8 @@ class CreateProductSchema(BaseModel):
     price: float
     description: str
     
+class UpdateProductSchema(BaseModel):
+    name: str = None
+    price: float = None
+    description: str = None
+    
