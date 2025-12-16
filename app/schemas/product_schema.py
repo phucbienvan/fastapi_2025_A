@@ -5,6 +5,7 @@ class ProductSchema(BaseModel):
     name: str
     price: float
     description: str
+    is_deleted: bool
 
     class Config:
         from_attributes = True
@@ -13,4 +14,9 @@ class CreateProductSchema(BaseModel):
     name: str
     price: float
     description: str
+    
+class UpdateProductSchema(BaseModel):
+    name: str | None = None
+    price: float | None = None
+    description: str | None = None
     
