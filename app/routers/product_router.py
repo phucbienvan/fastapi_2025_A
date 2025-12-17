@@ -35,3 +35,57 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     db.delete(product)
     db.commit()
     return DataResponse.custom_response(code="200", message="Delete product by id", data=None)
+
+@router.put(
+    "/products/{product_id}",
+    tags=["products"],
+    description="Update a product by id",
+    response_model=DataResponse[ProductSchema],
+)
+def update_product(
+    product_id: int,
+    payload: UpdateProductSchema,
+    db: Session = Depends(get_db),
+):
+    product: Product | None = db.get(Product, product_id)
+
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    update_data = payload.dict(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(product, field, value)
+
+    db.commit()
+    db.refresh(product)
+
+    return DataResponse.custom_response(
+        code="200",
+        message="Update product successfully",
+        data=product,
+    )
+
+@router.patch(
+    "/products/{product_id}/soft-delete",
+    tags=["products"],
+    description="Soft delete a product by id",
+    response_model=DataResponse[ProductSchema],
+)
+def soft_delete_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+):
+    product: Product | None = db.get(Product, product_id)
+
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    product.deleted_at = datetime.datetime.utcnow()
+    db.commit()
+
+    return DataResponse.custom_response(
+        code="200",
+        message="Soft delete product successfully",
+        data=None,
+    )
