@@ -8,4 +8,4 @@ class Product(BaseModel):
     name: str = Column(String, index=True)
     description: str = Column(String, index=True)
     price: float = Column(Float, index=True)
-    is_deleted: bool = Column(Boolean, default=False)
+    deleted_at: datetime.datetime = Column(DateTime, index=True, nullable=True)
