@@ -1,11 +1,11 @@
-from fastapi import APIRouter
-from app.schemas.user_schemas import RegisterUserSchema, UserSchema
+from fastapi import APIRouter,Depends
+from app.schemas.user_schemas import RegisterUserSchema, UserSchema,LoginUserSchema
 from app.models.user_model import User
 from app.db.base import get_db
 from sqlalchemy.orm import Session
-from fastapi import Depends
 from app.schemas.base_schema import DataResponse
-from app.core.security import hash_password
+from app.schemas.token_schema import TokenSchema
+from app.core.security import hash_password,verify_password,create_access_token
 router = APIRouter()
 
 
@@ -22,4 +22,13 @@ async def register_user(data: RegisterUserSchema, db: Session = Depends(get_db))
     except Exception as e:
         return DataResponse.custom_response(code="500", message="Register user failed", data=None)
 
-
+@router.post('/login', tags=['User'], description='Login user', response_model=DataResponse[TokenSchema])
+async def login_user(data: LoginUserSchema, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == data.email).first()
+    if not user:
+        return DataResponse.custom_response(code="404", message="User not existed",data=None)
+    verify = verify_password(data.password,user.password)
+    if not verify:
+        return DataResponse.custom_response(code='400', message="Email or password is incorrect", data=None)
+    token = create_access_token({"sub": str(user.id), "email": user.email},None)
+    return DataResponse.custom_response(code='200', message="Login success", data=TokenSchema(access_token=token))
