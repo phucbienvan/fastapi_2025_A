@@ -4,7 +4,7 @@ import re
 
 class UserSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: int
     name: str
     email: str
@@ -14,7 +14,7 @@ class RegisterUserSchema(BaseModel):
     name: str
     email: str
     password: str
-    
+
     @field_validator('email')
     @classmethod
     def validate_email(cls, email: str):
@@ -28,3 +28,13 @@ class RegisterUserSchema(BaseModel):
         if len(password) < 8:
             raise ValueError('Password must be at least 8 characters long')
         return password
+
+class LoginUserSchema(BaseModel):
+    email: str
+    password: str
+    token_type: str = "bearer"
+
+class LoginResponseSchema(BaseModel):
+    user: UserSchema
+    access_token: str
+    token_type: str
