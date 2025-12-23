@@ -23,3 +23,20 @@ async def register_user(data: RegisterUserSchema, db: Session = Depends(get_db))
         return DataResponse.custom_response(code="500", message="Register user failed", data=None)
 
 
+
+@router.post("/login", tags=["users"], description="Login and obtain access token", response_model=DataResponse[dict])
+async def login(data: "LoginRequestSchema", db: Session = Depends(get_db)):
+    from app.core.security import verify_password, create_access_token
+    from app.schemas.user_schemas import LoginRequestSchema
+
+    user = db.query(User).filter(User.email == data.email).first()
+    if not user:
+        return DataResponse.custom_response(code="401", message="Invalid credentials", data=None)
+
+    if not verify_password(data.password, user.password):
+        return DataResponse.custom_response(code="401", message="Invalid credentials", data=None)
+
+    token = create_access_token({"user_id": user.id})
+    return DataResponse.custom_response(code="200", message="Login success", data={"access_token": token, "token_type": "bearer"})
+
+
