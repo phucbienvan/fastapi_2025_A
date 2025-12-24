@@ -19,3 +19,6 @@ class UpdateProductSchema(BaseModel):
     name: Optional[str] = None
     price: Optional[float] = None
     description: Optional[str] = None
+
+    class Config:
+        from_attributes = True

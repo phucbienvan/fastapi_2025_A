@@ -5,8 +5,9 @@ from app.models.product_model import Product
 from app.schemas.product_schema import ProductSchema, CreateProductSchema, UpdateProductSchema
 from app.schemas.base_schema import DataResponse
 from datetime import datetime
+from app.core.security import oauth2_scheme
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(oauth2_scheme)] )
 
 @router.get("/products", tags=["products"], description="Get all products", response_model=DataResponse[list[ProductSchema]])
 async def get_products(db: Session = Depends(get_db)):
