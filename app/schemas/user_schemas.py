@@ -6,12 +6,12 @@ class UserSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     
     id: int
-    name: str
+    full_name: str
     email: str
-    status: int
+    is_active: int
 
 class RegisterUserSchema(BaseModel):
-    name: str
+    full_name: str
     email: str
     password: str
     
@@ -28,3 +28,12 @@ class RegisterUserSchema(BaseModel):
         if len(password) < 8:
             raise ValueError('Password must be at least 8 characters long')
         return password
+
+class LoginUserSchema(BaseModel):
+    email: str
+    password: str
+
+class TokenSchema(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserSchema
