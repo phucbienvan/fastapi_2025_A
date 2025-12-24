@@ -28,3 +28,15 @@ class RegisterUserSchema(BaseModel):
         if len(password) < 8:
             raise ValueError('Password must be at least 8 characters long')
         return password
+
+class LoginUserSchema(BaseModel):
+    email: str
+    password: str
+    
+class LoginUserResponseSchema(BaseModel):
+    access_token: str
+    token_type: str = "Bearer"
+
+class TokenPayload(BaseModel):
+    user_id: int
+    exp: int
