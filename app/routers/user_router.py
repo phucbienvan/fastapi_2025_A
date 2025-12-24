@@ -8,7 +8,6 @@ from app.schemas.base_schema import DataResponse
 from app.core.security import hash_password
 router = APIRouter()
 
-
 @router.post("/register", tags=["users"], description="Register a new user", response_model=DataResponse[UserSchema])
 async def register_user(data: RegisterUserSchema, db: Session = Depends(get_db)):
     password = hash_password(data.password)
@@ -22,4 +21,6 @@ async def register_user(data: RegisterUserSchema, db: Session = Depends(get_db))
     except Exception as e:
         return DataResponse.custom_response(code="500", message="Register user failed", data=None)
 
-
+@router.post("/login", tags=["users"], description="Login")
+async def login():
+    return {"message": "Login page"}
