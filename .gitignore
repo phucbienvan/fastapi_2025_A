@@ -2,3 +2,5 @@
 .cursor
 .env
 .DS_Store
+/py_cache__/
+*.pyc

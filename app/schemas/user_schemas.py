@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from pydantic import field_validator
+from pydantic import field_validator, EmailStr
 import re
 
 class UserSchema(BaseModel):
@@ -8,7 +8,7 @@ class UserSchema(BaseModel):
     id: int
     name: str
     email: str
-    status: int
+    is_verified: int
 
 class RegisterUserSchema(BaseModel):
     name: str
@@ -28,3 +28,12 @@ class RegisterUserSchema(BaseModel):
         if len(password) < 8:
             raise ValueError('Password must be at least 8 characters long')
         return password
+    
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+    
+class LoginSchema(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserSchema
