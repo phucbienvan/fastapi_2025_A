@@ -8,6 +8,6 @@ class User(BaseModel):
     name: str = Column(String, index=True)
     email: str = Column(String, index=True)
     password: str = Column(String, index=True)
-    status: int = Column(Integer, index=True, default=1)
+    is_verified: int = Column(Integer, index=True, default=0)
     created_at: datetime = Column(DateTime, index=True, default=datetime.now)
     updated_at: datetime = Column(DateTime, index=True, default=datetime.now)
