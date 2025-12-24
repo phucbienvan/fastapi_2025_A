@@ -4,11 +4,12 @@ from sqlalchemy.orm import Session
 from app.models.product_model import Product
 from app.schemas.product_schema import ProductSchema, CreateProductSchema, UpdateProductSchema
 from app.schemas.base_schema import DataResponse
+from app.core.security import oauth2_scheme
 from datetime import datetime
 
 router = APIRouter()
 
-@router.get("/products", tags=["products"], description="Get all products", response_model=DataResponse[list[ProductSchema]])
+@router.get("/products", tags=["products"], description="Get all products", response_model=DataResponse[list[ProductSchema]], dependencies=[Depends(oauth2_scheme)])
 async def get_products(db: Session = Depends(get_db)):
     products = db.query(Product).filter(Product.deleted_at == None).all()
     return DataResponse.custom_response(code="200", message="get list products", data=products)
