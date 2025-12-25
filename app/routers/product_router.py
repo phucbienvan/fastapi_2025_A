@@ -50,3 +50,4 @@ def update_product(product_id: int, data: UpdateProductSchema, db: Session = Dep
     db.commit()
     db.refresh(product)
     return DataResponse.custom_response(code="200", message="Update product by id", data=product)
+
